@@ -1,0 +1,148 @@
+#!/bin/bash
+
+# configurable consts
+
+OUTDIR="$(pwd)/build-out"
+NOCONFIRM=false
+
+# ---
+# flags etc.
+
+while test $# -gt 0; do
+  case "$1" in
+    -y|--noconfirm)
+      NOCONFIRM=true
+      shift
+      ;;
+    *)
+      break
+      ;;
+  esac
+done
+
+# ---
+# confirm
+
+echo "press 'y' to begin building"
+echo "NOTE: this WILL delete the contents of $OUTDIR and begin again from scratch"
+
+while ! $NOCONFIRM
+do
+	read -n 1 k <&1
+	if [[ $k = y ]] ; then
+		break
+	fi
+done
+
+# ---
+# remove existing $OUTDIR contents
+
+echo "clearing existing contents of $OUTDIR..."
+rm -rf "$OUTDIR"
+mkdir -p "$OUTDIR"
+echo "complete!"
+
+# ---
+# ensure dependencies installed
+
+if ! command -v pandoc &> /dev/null
+then
+    echo "pandoc could not be found - exiting..."
+    exit
+fi
+
+# ---
+# build LaTeX to HTML files
+
+echo ""
+echo "------"
+echo "building .tex files to .html files..."
+echo "------"
+echo ""
+
+search=$(find . -type f -iname *.tex)
+
+for r in "${search[@]}"
+do
+	echo "building $r to HTML..."
+	outfile="$(echo $r | sed -r 's/(.*)\..*/\1/').html"
+	pandoc -s "$r" -o "$outfile" --number-sections
+	echo "complete!"
+done
+
+echo ""
+echo "---"
+echo "building .tex files to .html files complete!"
+echo "---"
+echo ""
+
+# ---
+# collate HTML files
+
+echo ""
+echo "---"
+echo "collating .html files..."
+echo "---"
+echo ""
+
+search=$(find . -type f -iname *.html)
+
+for r in "${search[@]}"
+do
+	echo "moving $r to $OUTDIR..."
+	mv "$r" "$OUTDIR/."
+	echo "complete!"
+done
+
+echo ""
+echo "---"
+echo "collating .html files complete!"
+echo "---"
+echo ""
+
+# ---
+# build index
+
+echo "---"
+echo "building index..."
+echo "---"
+
+index=$(ls -1 $OUTDIR/)
+OUTFILE="$OUTDIR/_tmp_index_middle_autogen.md"
+
+# ensure $OUTFILE exists
+touch "$OUTFILE"
+
+for i in "${index[@]}"
+do
+  # strip extension
+	hr=$(echo $i | awk -F'.' '{print $1}')
+
+  # convert hyphens to spaces, then convert to title case
+	hr=$(echo $hr | sed 's/-/ /g' | sed 's/[^ ]\+/\L\u&/g')
+
+  # add colon after first two words
+  # yes this is janky but it works -NS
+  hr=$(echo $hr | awk -F' ' '{print $1,$2": "; $1=$2=""; print $0}' ORS='' | awk '$1=$1')
+
+  # append UL dotpoint with human-readable title linking to HTML file
+  echo "* [$hr]($i)" >> "$OUTFILE"
+done
+
+# append two blank lines to ensure headings from footer .md file display correctly
+echo "" >> $OUTFILE
+echo "" >> $OUTFILE
+
+# combine preamble, contents, and footer into index.md file
+cat "$(pwd)/index-preamble.md" "$OUTFILE" "$(pwd)/index-footer.md" > "$OUTDIR/index.md"
+
+# convert index.md to index.html
+pandoc -s "$OUTDIR/index.md" -o "$OUTDIR/index.html" --metadata title="Valor Esports Legal Documents"
+
+# remove temporary files
+rm "$OUTFILE" "$OUTDIR/index.md"
+
+echo ""
+echo "---"
+echo "building index complete!"
+echo "---"
