@@ -94,8 +94,6 @@ do
 	echo "complete!"
 done
 
-cp "$(pwd)/stylesheet.css" "$OUTDIR/."
-
 echo ""
 echo "---"
 echo "collating files complete!"
@@ -131,18 +129,19 @@ do
   echo "* [$hr]($i)" >> "$OUTFILE"
 done
 
-# append two blank lines to ensure headings from footer .md file display correctly
-echo "" >> $OUTFILE
+# append blank line to ensure headings from footer .md file display correctly
 echo "" >> $OUTFILE
 
 # combine preamble, contents, and footer into index.md file
 cat "$(pwd)/index-preamble.md" "$OUTFILE" "$(pwd)/index-footer.md" > "$OUTDIR/index.md"
 
 # convert index.md to index.html
-pandoc -s "$OUTDIR/index.md" -o "$OUTDIR/index.html" -f latex -t html --css="stylesheet.css" --metadata title="Valor Esports Legal Documents"
+pandoc -s "$OUTDIR/index.md" -o "$OUTDIR/index.html" -f markdown -t html --css="stylesheet.css" --metadata title="Valor Esports Legal Documents"
 
 # remove temporary files
 rm "$OUTFILE" "$OUTDIR/index.md"
+
+cp "$(pwd)/stylesheet.css" "$OUTDIR/."
 
 echo ""
 echo "---"
