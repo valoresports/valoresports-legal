@@ -1,0 +1,29 @@
+name: Build and deploy
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: install pandoc
+        run: |
+          sudo apt-get install -y pandoc
+      - name: run build script
+        run: |
+          /bin/bash ./build
+      - name: deploy
+        if: ${{ success() && github.event_name == 'push' }}
+        uses: crazy-max/ghaction-github-pages@v2
+        with:
+          target_branch: prod-build
+          build_dir: ./build-out
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
