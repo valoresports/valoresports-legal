@@ -66,7 +66,7 @@ for r in "${search[@]}"
 do
 	echo "building $r to HTML..."
 	outfile="$(echo $r | sed -r 's/(.*)\..*/\1/').html"
-	pandoc -s "$r" -o "$outfile" --number-sections
+	pandoc -s "$r" -o "$outfile" -f latex -t html --css="$(pwd)/stylesheet.css" --number-sections
 	echo "complete!"
 done
 
@@ -137,7 +137,7 @@ echo "" >> $OUTFILE
 cat "$(pwd)/index-preamble.md" "$OUTFILE" "$(pwd)/index-footer.md" > "$OUTDIR/index.md"
 
 # convert index.md to index.html
-pandoc -s "$OUTDIR/index.md" -o "$OUTDIR/index.html" --metadata title="Valor Esports Legal Documents"
+pandoc -s "$OUTDIR/index.md" -o "$OUTDIR/index.html" -f latex -t html --css="$(pwd)/stylesheet.css" --metadata title="Valor Esports Legal Documents"
 
 # remove temporary files
 rm "$OUTFILE" "$OUTDIR/index.md"
