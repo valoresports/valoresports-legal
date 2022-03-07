@@ -18,7 +18,7 @@ jobs:
           sudo apt-get install -y pandoc
       - name: run build script
         run: |
-          /bin/bash ./build
+          /bin/bash ./build --noconfirm
       - name: deploy
         if: ${{ success() && github.event_name == 'push' }}
         uses: crazy-max/ghaction-github-pages@v2
