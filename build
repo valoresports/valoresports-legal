@@ -62,13 +62,12 @@ echo ""
 
 search=$(find . -type f -iname *.tex)
 
-for r in "${search[@]}"
-do
-	echo "building $r to HTML..."
+while read -r r; do
+  echo "building $r to HTML..."
 	outfile="$(echo $r | sed -r 's/(.*)\..*/\1/').html"
 	pandoc -s "$r" -o "$outfile" -f latex -t html --css="stylesheet.css" --number-sections
 	echo "complete!"
-done
+done <<< "$search"
 
 echo ""
 echo "---"
@@ -87,12 +86,11 @@ echo ""
 
 search=$(find . -type f -iname *.html)
 
-for r in "${search[@]}"
-do
+while read -r r; do
 	echo "moving $r to $OUTDIR..."
 	mv "$r" "$OUTDIR/."
 	echo "complete!"
-done
+done <<< "$search"
 
 echo ""
 echo "---"
@@ -113,8 +111,7 @@ OUTFILE="$OUTDIR/_tmp_index_middle_autogen.md"
 # ensure $OUTFILE exists
 touch "$OUTFILE"
 
-for i in "${index[@]}"
-do
+while read -r i; do
   # strip extension
 	hr=$(echo $i | awk -F'.' '{print $1}')
 
@@ -127,7 +124,7 @@ do
 
   # append UL dotpoint with human-readable title linking to HTML file
   echo "* [$hr]($i)" >> "$OUTFILE"
-done
+done <<< "$index"
 
 # append blank line to ensure headings from footer .md file display correctly
 echo "" >> $OUTFILE
