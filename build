@@ -52,6 +52,30 @@ then
 fi
 
 # ---
+# build LaTeX to PDF files
+
+echo ""
+echo "------"
+echo "building .tex files to .pdf files..."
+echo "------"
+echo ""
+
+search=$(find . -type f -iname *.tex)
+
+while read -r r; do
+  echo "building $r to PDF..."
+	outfile="$(echo $r | sed -r 's/(.*)\..*/\1/').pdf"
+	pandoc "$r" -o "$outfile" -f latex -t ms
+	echo "complete!"
+done <<< "$search"
+
+echo ""
+echo "---"
+echo "building .tex files to .pdf files complete!"
+echo "---"
+echo ""
+
+# ---
 # build LaTeX to HTML files
 
 echo ""
@@ -84,10 +108,18 @@ echo "collating files..."
 echo "---"
 echo ""
 
-search=$(find . -type f -iname *.html)
-
+search=$(find . -type f -iname *.pdf)
+mkdir -p $OUTDIR/pdf/
 while read -r r; do
-	echo "moving $r to $OUTDIR..."
+	echo "moving $r to $OUTDIR/pdf ..."
+	mv "$r" "$OUTDIR/pdf/."
+	echo "complete!"
+done <<< "$search"
+
+
+search=$(find . -type f -iname *.html)
+while read -r r; do
+	echo "moving $r to $OUTDIR ..."
 	mv "$r" "$OUTDIR/."
 	echo "complete!"
 done <<< "$search"
