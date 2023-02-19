@@ -37,7 +37,7 @@ done
 # ---
 # remove existing $OUTDIR contents
 
-echo "clearing existing contents of $OUTDIR..."
+echo "clearing existing contents of $OUTDIR ..."
 rm -rf "$OUTDIR"
 mkdir -p "$OUTDIR"
 echo "complete!"
@@ -47,7 +47,7 @@ echo "complete!"
 
 if ! command -v pandoc &> /dev/null
 then
-    echo "pandoc could not be found - exiting..."
+    echo "pandoc could not be found! exiting ..."
     exit
 fi
 
@@ -56,7 +56,7 @@ fi
 
 echo ""
 echo "------"
-echo "building .tex files to .pdf files..."
+echo "building .tex files to .pdf files ..."
 echo "------"
 echo ""
 
@@ -80,7 +80,7 @@ echo ""
 
 echo ""
 echo "------"
-echo "building .tex files to .html files..."
+echo "building .tex files to .html files ..."
 echo "------"
 echo ""
 
@@ -104,18 +104,9 @@ echo ""
 
 echo ""
 echo "---"
-echo "collating files..."
+echo "collating files ..."
 echo "---"
 echo ""
-
-search=$(find . -type f -iname *.pdf)
-mkdir -p $OUTDIR/pdf/
-while read -r r; do
-	echo "moving $r to $OUTDIR/pdf ..."
-	mv "$r" "$OUTDIR/pdf/."
-	echo "complete!"
-done <<< "$search"
-
 
 search=$(find . -type f -iname *.html)
 while read -r r; do
@@ -134,7 +125,7 @@ echo ""
 # build index
 
 echo "---"
-echo "building index..."
+echo "building index ..."
 echo "---"
 
 index=$(ls -1 $OUTDIR/)
@@ -172,11 +163,37 @@ rm "$OUTFILE" "$OUTDIR/index.md"
 
 cp "$(pwd)/stylesheet.css" "$OUTDIR/."
 
+
+echo ""
+echo "---"
+echo "building index complete!"
+echo "---"
+
+# ---
+# deal with PDFs
+
+
+echo ""
+echo "---"
+echo "dealing with PDFs ..."
+echo "---"
+echo ""
+# move PDF files to new directory inside build-out dir
+search=$(find . -type f -iname *.pdf)
+mkdir -p $OUTDIR/pdf/
+while read -r r; do
+	echo "moving $r to $OUTDIR/pdf ..."
+	mv "$r" "$OUTDIR/pdf/."
+	echo "complete!"
+done <<< "$search"
+
+
 # build HTML index for PDF files
 cd "$OUTDIR/pdf"
 tree -H . -o index.html
 
 echo ""
 echo "---"
-echo "building index complete!"
+echo "dealing with PDFs complete!"
 echo "---"
+echo ""
