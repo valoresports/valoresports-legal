@@ -65,7 +65,7 @@ search=$(find . -type f -iname *.tex)
 while read -r r; do
   echo "building $r to PDF..."
 	outfile="$(echo $r | sed -r 's/(.*)\..*/\1/').pdf"
-	pandoc "$r" -o "$outfile" -f latex -t ms
+	pandoc "$r" -o "$outfile" -f latex -t ms --number-sections
 	echo "complete!"
 done <<< "$search"
 
