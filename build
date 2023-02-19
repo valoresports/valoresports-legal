@@ -172,6 +172,10 @@ rm "$OUTFILE" "$OUTDIR/index.md"
 
 cp "$(pwd)/stylesheet.css" "$OUTDIR/."
 
+# build HTML index for PDF files
+cd "$OUTDIR/pdf"
+tree -H . -o index.html
+
 echo ""
 echo "---"
 echo "building index complete!"
