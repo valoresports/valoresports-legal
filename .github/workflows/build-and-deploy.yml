@@ -13,9 +13,9 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v2
-      - name: install pandoc
+      - name: install pandoc and groff
         run: |
-          sudo apt-get install -y pandoc
+          sudo apt-get install -y pandoc groff
       - name: run build script
         run: |
           /bin/bash ./build --noconfirm
