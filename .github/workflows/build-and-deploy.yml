@@ -15,7 +15,7 @@ jobs:
       - name: collate .tex files
         run: |
           find -type f -iname "*.tex" -exec mv {} . \;
-      - name: convert tex tiles to PDFs
+      - name: convert .tex tiles to PDFs
         uses: xu-cheng/latex-action@v2
         with:
           root_file: "*.tex"
@@ -24,7 +24,7 @@ jobs:
         run: |
           cd ..
           mkdir -p public/pdf
-          find -type f -iname "*.pdf" -exec mv {} public/pdf/
+          find -type f -iname "*.pdf" -exec mv {} public/pdf/. \;
           cd public/pdf
           tree -H . -o index.html
       - name: deploy
