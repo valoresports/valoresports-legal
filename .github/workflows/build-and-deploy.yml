@@ -14,9 +14,7 @@ jobs:
         uses: actions/checkout@v2
       - name: collate .tex files
         run: |
-          mkdir tex
-          find -type f -iname "*.tex" -exec mv {} tex/. \;
-          cd tex
+          find -type f -iname "*.tex" -exec mv {} . \;
       - name: convert tex tiles to PDFs
         uses: xu-cheng/latex-action@v2
         with:
