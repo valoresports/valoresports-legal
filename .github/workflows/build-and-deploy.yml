@@ -28,9 +28,6 @@ jobs:
           cd public/pdf
           tree -H . -o index.html
       - name: deploy
-        uses: peaceiris/actions-gh-pages@v3
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public
-          cname: legal.valoresports.com
-          publish_branch: prod-build
+          folder: build
