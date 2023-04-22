@@ -1,7 +1,6 @@
 name: Build and deploy
 
 on:
-  pull_request:
   push:
     branches: [main]
 
@@ -9,20 +8,31 @@ on:
 
 jobs:
   build-and-deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: checkout
         uses: actions/checkout@v2
-      - name: install pandoc and groff
+      - name: collate .tex files
         run: |
-          sudo apt-get install -y pandoc groff
-      - name: run build script
+          mkdir tex
+          find -type f -iname "*.tex" -exec mv {} tex/. \;
+          cd tex
+      - name: convert tex tiles to PDFs
+        uses: xu-cheng/latex-action@v2
+        with:
+          root_file: "*.tex"
+          glob_root_file: true
+      - name: collate PDFs into public dir
         run: |
-          /bin/bash ./build --noconfirm
+          cd ..
+          mkdir -p public/pdf
+          find -type f -iname "*.pdf" -exec mv {} public/pdf/
+          cd public/pdf
+          tree -H . -o index.html
       - name: deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build-out
+          publish_dir: ./public
           cname: legal.valoresports.com
           publish_branch: prod-build
