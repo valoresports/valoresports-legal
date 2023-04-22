@@ -20,6 +20,7 @@ jobs:
         with:
           root_file: "*.tex"
           glob_root_file: true
+          latexmk_use_xelatex: true
       - name: collate PDFs into public dir
         run: |
           mkdir -p public/pdf
