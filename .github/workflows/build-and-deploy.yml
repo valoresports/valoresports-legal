@@ -22,7 +22,6 @@ jobs:
           glob_root_file: true
       - name: collate PDFs into public dir
         run: |
-          cd ..
           mkdir -p public/pdf
           find -type f -iname "*.pdf" -exec mv {} public/pdf/. \;
           cd public/pdf
