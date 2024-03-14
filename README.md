@@ -4,4 +4,4 @@ This repo contains important public documents such as product/service user agree
 
 ## Copyright
 
-All content copyright © 2023 [Valor Esports](https:///valoresports.com/) Pty Ltd ABN 94 648 832 080. All rights reserved.
+All content copyright © 2021&ndash;2024 [Valor Esports](https:///valoresports.com/) Pty Ltd ABN 94 648 832 080. All rights reserved.
